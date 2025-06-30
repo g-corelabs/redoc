@@ -1,11 +1,11 @@
 import * as Sampler from 'openapi-sampler';
 
-import { OpenAPIMediaType } from '../../types';
-import { RedocNormalizedOptions } from '../RedocNormalizedOptions';
+import type { OpenAPIMediaType } from '../../types';
+import type { RedocNormalizedOptions } from '../RedocNormalizedOptions';
 import { SchemaModel } from './Schema';
 
 import { isJsonLike, mapValues } from '../../utils';
-import { OpenAPIParser } from '../OpenAPIParser';
+import type { OpenAPIParser } from '../OpenAPIParser';
 import { ExampleModel } from './Example';
 
 export class MediaTypeModel {
@@ -14,7 +14,7 @@ export class MediaTypeModel {
   name: string;
   isRequestType: boolean;
   onlyRequiredInSamples: boolean;
-  generatedPayloadSamplesMaxDepth: number;
+  generatedSamplesMaxDepth: number;
 
   /**
    * @param isRequestType needed to know if skipe RO/RW fields in objects
@@ -30,7 +30,7 @@ export class MediaTypeModel {
     this.isRequestType = isRequestType;
     this.schema = info.schema && new SchemaModel(parser, info.schema, '', options);
     this.onlyRequiredInSamples = options.onlyRequiredInSamples;
-    this.generatedPayloadSamplesMaxDepth = options.generatedPayloadSamplesMaxDepth;
+    this.generatedSamplesMaxDepth = options.generatedSamplesMaxDepth;
     if (info.examples !== undefined) {
       this.examples = mapValues(
         info.examples,
@@ -40,7 +40,7 @@ export class MediaTypeModel {
       this.examples = {
         default: new ExampleModel(
           parser,
-          { value: parser.shallowDeref(info.example) },
+          { value: parser.deref(info.example).resolved },
           name,
           info.encoding,
         ),
@@ -55,7 +55,7 @@ export class MediaTypeModel {
       skipReadOnly: this.isRequestType,
       skipWriteOnly: !this.isRequestType,
       skipNonRequired: this.isRequestType && this.onlyRequiredInSamples,
-      maxSampleDepth: this.generatedPayloadSamplesMaxDepth,
+      maxSampleDepth: this.generatedSamplesMaxDepth,
     };
     if (this.schema && this.schema.oneOf) {
       this.examples = {};

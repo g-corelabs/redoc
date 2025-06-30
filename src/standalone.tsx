@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { hydrate as hydrateComponent, render } from 'react-dom';
+import { createRoot, hydrateRoot } from 'react-dom/client';
 import { configure } from 'mobx';
 
 import { Redoc, RedocStandalone } from './components/';
-import { AppStore, StoreState } from './services/AppStore';
+import { AppStore } from './services/AppStore';
 import { debugTime, debugTimeEnd } from './utils/debug';
 import { querySelector } from './utils/dom';
+import type { StoreState } from './services';
 
 configure({
   useProxies: 'ifavailable',
@@ -58,7 +59,8 @@ export function init(
     spec = specOrSpecUrl;
   }
 
-  render(
+  const root = createRoot(element!);
+  root.render(
     React.createElement(
       RedocStandalone,
       {
@@ -69,8 +71,13 @@ export function init(
       },
       ['Loading...'],
     ),
-    element,
   );
+}
+
+export function destroy(element: Element | null = querySelector('redoc')): void {
+  if (element) {
+    createRoot(element).unmount();
+  }
 }
 
 export function hydrate(
@@ -84,7 +91,7 @@ export function hydrate(
 
   setTimeout(() => {
     debugTime('Redoc hydrate');
-    hydrateComponent(<Redoc store={store} />, element, callback);
+    hydrateRoot(element!, <Redoc store={store} />, { onRecoverableError: callback });
     debugTimeEnd('Redoc hydrate');
   }, 0);
 }

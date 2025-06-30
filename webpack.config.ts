@@ -8,6 +8,7 @@ const nodeExternals = require('webpack-node-externals')({
   // bundle in modules that need transpiling + non-js (e.g. css)
   allowlist: [
     'swagger2openapi',
+    'marked',
     /reftools/,
     'oas-resolver',
     'oas-kit-common',
@@ -55,6 +56,7 @@ export default (env: { standalone?: boolean; browser?: boolean } = {}) => ({
       fs: path.resolve(__dirname, 'src/empty.js'),
       os: path.resolve(__dirname, 'src/empty.js'),
       tty: path.resolve(__dirname, 'src/empty.js'),
+      url: require.resolve('url/'),
     },
   },
   performance: false,
@@ -65,11 +67,12 @@ export default (env: { standalone?: boolean; browser?: boolean } = {}) => ({
         'node-fetch': 'null',
         'node-fetch-h2': 'null',
         yaml: 'null',
+        url: 'null',
         'safe-json-stringify': 'null',
       }
     : (context, request, callback) => {
         // ignore node-fetch dep of swagger2openapi as it is not used
-        if (/esprima|node-fetch|node-fetch-h2|\/yaml|safe-json-stringify$/i.test(request)) {
+        if (/esprima|node-fetch|node-fetch-h2|\/yaml|safe-json-stringify|url$/i.test(request)) {
           return callback(null, 'var undefined');
         }
         return nodeExternals(context, request, callback);
@@ -81,7 +84,6 @@ export default (env: { standalone?: boolean; browser?: boolean } = {}) => ({
         test: /\.(tsx?|[cm]?js)$/,
         loader: 'esbuild-loader',
         options: {
-          loader: 'tsx',
           target: 'es2015',
           tsconfigRaw: require('./tsconfig.json'),
         },
@@ -95,7 +97,6 @@ export default (env: { standalone?: boolean; browser?: boolean } = {}) => ({
           {
             loader: 'esbuild-loader',
             options: {
-              loader: 'css',
               minify: true,
             },
           },

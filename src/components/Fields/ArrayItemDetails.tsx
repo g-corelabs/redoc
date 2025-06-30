@@ -1,12 +1,22 @@
 import * as React from 'react';
 import { TypeFormat, TypePrefix } from '../../common-elements/fields';
-import { ConstraintsView } from './FieldContstraints';
+import { ConstraintsView } from './FieldConstraints';
 import { Pattern } from './Pattern';
 import { SchemaModel } from '../../services';
 import styled from '../../styled-components';
+import { OptionsContext } from '../OptionsProvider';
 
 export function ArrayItemDetails({ schema }: { schema: SchemaModel }) {
-  if (!schema || (schema.type === 'string' && !schema.constraints.length)) return null;
+  const { hideSchemaPattern } = React.useContext(OptionsContext);
+  if (
+    !schema ||
+    ((!schema?.pattern || hideSchemaPattern) &&
+      !schema.items &&
+      !schema.displayFormat &&
+      !schema.constraints?.length) // return null for cases where all constraints are empty
+  ) {
+    return null;
+  }
 
   return (
     <Wrapper>

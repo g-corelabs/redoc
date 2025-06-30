@@ -1,3 +1,4 @@
+import { UnderlinedHeader } from '../../common-elements';
 import styled from '../../styled-components';
 import { ResponseTitle } from './ResponseTitle';
 
@@ -41,6 +42,14 @@ cursor: default;
 
 export const ResponseDetailsWrap = styled.div`
   padding: 10px;
+`;
+
+export const HeadersCaption = styled(UnderlinedHeader).attrs({
+  as: 'caption',
+})`
+  text-align: left;
+  margin-top: 1em;
+  caption-side: top;
 `;
 
 export const Code = styled.strong`

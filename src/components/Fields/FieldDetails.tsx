@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { observer } from 'mobx-react';
 
 import {
   RecursiveLabel,
@@ -7,14 +8,14 @@ import {
   TypePrefix,
   TypeTitle,
 } from '../../common-elements/fields';
-import { getSerializedValue } from '../../utils';
+import { getSerializedValue, isArray, isObject } from '../../utils';
 import { ExternalDocumentation } from '../ExternalDocumentation/ExternalDocumentation';
 import { Markdown } from '../Markdown/Markdown';
 import { EnumValues } from './EnumValues';
 import { Extensions } from './Extensions';
 import { FieldProps } from './Field';
 import { Examples } from './Examples';
-import { ConstraintsView } from './FieldContstraints';
+import { ConstraintsView } from './FieldConstraints';
 import { FieldDetail } from './FieldDetail';
 
 import { Badge } from '../../common-elements/';
@@ -24,12 +25,13 @@ import { OptionsContext } from '../OptionsProvider';
 import { Pattern } from './Pattern';
 import { ArrayItemDetails } from './ArrayItemDetails';
 
-function FieldDetailsComponent(props: FieldProps) {
+export const FieldDetailsComponent = observer((props: FieldProps) => {
   const { enumSkipQuotes, hideSchemaTitles } = React.useContext(OptionsContext);
 
   const { showExamples, field, renderDiscriminatorSwitch } = props;
   const { schema, description, deprecated, extensions, in: _in, const: _const } = field;
-  const isArrayType = schema.type === 'array';
+  const isArrayType =
+    schema.type === 'array' || (isArray(schema.type) && schema.type.includes('array'));
 
   const rawDefault = enumSkipQuotes || _in === 'header'; // having quotes around header field default values is confusing and inappropriate
 
@@ -50,6 +52,10 @@ function FieldDetailsComponent(props: FieldProps) {
 
     return null;
   }, [field, showExamples]);
+  const defaultValue =
+    isObject(schema.default) && field.in
+      ? getSerializedValue(field, schema.default).replace(`${field.name}=`, '')
+      : schema.default;
 
   return (
     <div>
@@ -91,9 +97,9 @@ function FieldDetailsComponent(props: FieldProps) {
           <Badge type="warning"> {l('deprecated')} </Badge>
         </div>
       )}
-      <FieldDetail raw={rawDefault} label={l('default') + ':'} value={schema.default} />
+      <FieldDetail raw={rawDefault} label={l('default') + ':'} value={defaultValue} />
       {!renderDiscriminatorSwitch && (
-        <EnumValues isArrayType={isArrayType} values={schema.enum} />
+        <EnumValues type={schema.type} values={schema['x-enumDescriptions'] || schema.enum} />
       )}{' '}
       {renderedExamples}
       <Extensions extensions={{ ...extensions, ...schema.extensions }} />
@@ -107,6 +113,6 @@ function FieldDetailsComponent(props: FieldProps) {
       {(_const && <FieldDetail label={l('const') + ':'} value={_const} />) || null}
     </div>
   );
-}
+});
 
 export const FieldDetails = React.memo<FieldProps>(FieldDetailsComponent);

@@ -14,7 +14,7 @@ export const ServerRelativeURL = styled.span`
   text-overflow: ellipsis;
 `;
 
-export const EndpointInfo = styled.button<{ expanded?: boolean; inverted?: boolean }>`
+export const EndpointInfo = styled.button<{ $expanded?: boolean; $inverted?: boolean }>`
   outline: 0;
   color: inherit;
   width: 100%;
@@ -27,21 +27,22 @@ export const EndpointInfo = styled.button<{ expanded?: boolean; inverted?: boole
   align-items: center;
 `;
 
-export const HttpVerb = styled.span.attrs((props: { type: string; compact?: boolean }) => ({
+export const HttpVerb = styled.span.attrs((props: { type: string; $compact?: boolean }) => ({
   className: `http-verb ${props.type}`,
-}))<{ type: string; compact?: boolean }>`
-  font-size: ${props => (props.compact ? '0.8em' : '0.929em')};
-  line-height: ${props => (props.compact ? '18px' : '20px')};
+}))<{ type: string; $compact?: boolean }>`
+  font-size: ${props => (props.$compact ? '0.8em' : '0.929em')};
+  line-height: ${props => (props.$compact ? '18px' : '20px')};
   background-color: ${props => props.theme.colors.http[props.type] || '#999999'};
   color: #ffffff;
-  padding: ${props => (props.compact ? '2px 8px' : '3px 10px')};
+  padding: ${props => (props.$compact ? '2px 8px' : '3px 10px')};
   text-transform: uppercase;
   font-family: ${props => props.theme.typography.headings.fontFamily};
   margin: 0;
   border-radius: 6px;
 `;
 
-export const ServersOverlay = styled.div<{ expanded: boolean }>`
+export const ServersOverlay = styled.div<{ $expanded: boolean }>`
+  position: absolute;
   width: 100%;
   background: #fff;
   color: #56535f;

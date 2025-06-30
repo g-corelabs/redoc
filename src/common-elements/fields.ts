@@ -1,10 +1,17 @@
 import { transparentize } from 'polished';
 
-import styled, { extensionsHook } from '../styled-components';
+import styled, { css, extensionsHook } from '../styled-components';
 import { PropertyNameCell } from './fields-layout';
+import { deprecatedCss } from './mixins';
 import { ShelfIcon } from './shelfs';
 
 export const ClickablePropertyNameCell = styled(PropertyNameCell)`
+  &.deprecated {
+    span.property-name {
+      ${deprecatedCss}
+    }
+  }
+
   button {
     background-color: transparent;
     border: 0;
@@ -17,6 +24,27 @@ export const ClickablePropertyNameCell = styled(PropertyNameCell)`
     &:focus {
       font-weight: ${({ theme }) => theme.typography.fontWeightBold};
     }
+    ${({ kind }) =>
+      kind === 'patternProperties' &&
+      css`
+        display: inline-flex;
+        margin-right: 20px;
+
+        > span.property-name {
+          white-space: break-spaces;
+          text-align: left;
+
+          ::before,
+          ::after {
+            content: '/';
+            filter: opacity(0.2);
+          }
+        }
+
+        > svg {
+          align-self: center;
+        }
+      `}
   }
   ${ShelfIcon} {
     height: ${({ theme }) => theme.schema.arrow.size};
@@ -48,12 +76,18 @@ export const TypeTitle = styled(FieldLabel)`
 
 export const TypeFormat = TypeName;
 
-export const RequiredLabel = styled(FieldLabel.withComponent('div'))`
+export const RequiredLabel = styled(FieldLabel).attrs({
+  as: 'div',
+})`
   color: ${props => props.theme.schema.requireLabelColor};
   font-size: 12px;
   font-weight: normal;
   margin-left: 27px;
   line-height: 1;
+`;
+
+export const PropertyLabel = styled(RequiredLabel)`
+  color: ${props => props.theme.colors.primary.light};
 `;
 
 export const RecursiveLabel = styled(FieldLabel)`
@@ -63,14 +97,17 @@ export const RecursiveLabel = styled(FieldLabel)`
 
 export const PatternLabel = styled(FieldLabel)`
   color: #0e7c86;
+  font-family: ${props => props.theme.typography.code.fontFamily};
+  font-size: 12px;
   &::before,
   &::after {
-    font-weight: bold;
+    content: ' ';
   }
 `;
 
 export const ExampleValue = styled(FieldLabel)`
   border-radius: 2px;
+  word-break: break-word;
   ${({ theme }) => `
     background-color: ${transparentize(0.95, theme.colors.text.primary)};
     color: ${transparentize(0.1, theme.colors.text.primary)};

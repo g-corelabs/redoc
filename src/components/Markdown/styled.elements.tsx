@@ -15,6 +15,7 @@ export const linksCss = css`
 
     &:hover {
       color: ${props => props.theme.typography.links.hover};
+      text-decoration: ${props => props.theme.typography.links.hoverTextDecoration};
     }
 
     &:active {
@@ -27,7 +28,7 @@ export const StyledMarkdownBlock = styled(
   PrismDiv as StyledComponent<
     'div',
     ResolvedThemeInterface,
-    { compact?: boolean; inline?: boolean }
+    { $compact?: boolean; $inline?: boolean }
   >,
 )`
   font-family: ${props => props.theme.typography.fontFamily};
@@ -40,8 +41,8 @@ export const StyledMarkdownBlock = styled(
     }
   }
 
-  ${({ compact }) =>
-    compact &&
+  ${({ $compact }) =>
+    $compact &&
     `
     p:first-child {
       margin-top: 0;
@@ -51,8 +52,8 @@ export const StyledMarkdownBlock = styled(
     }
   `}
 
-  ${({ inline }) =>
-    inline &&
+  ${({ $inline }) =>
+    $inline &&
     ` p {
     display: inline-block;
   }`}
@@ -90,7 +91,7 @@ export const StyledMarkdownBlock = styled(
     padding: ${props => props.theme.spacing.unit * 4}px;
     overflow-x: auto;
     line-height: normal;
-    border-radius: 0px;
+    border-radius: 0;
     border: 1px solid rgba(38, 50, 56, 0.1);
 
     code {

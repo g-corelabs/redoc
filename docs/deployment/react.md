@@ -1,7 +1,9 @@
 ---
-title: Use the Redoc React component
-redirectFrom:
-  - /docs/quickstart/react/
+seo:
+  title: Use the Redoc React component
+redirects:
+  '/docs/redoc/quickstart/react/':
+    to: '/docs/redoc/deployment/react/'
 ---
 
 # How to use the Redoc React component
@@ -59,7 +61,7 @@ For example:
 ```
 
 For more information on configuration options, refer to the
-[Configuration options for Reference docs](https://redocly.com/docs/api-reference-docs/configuration/)
+[Configuration options for Reference docs](https://redocly.com/docs/api-reference-docs/configuration/functionality/)
 section of the documentation. Options available for Redoc are noted,
 "Supported in Redoc CE".
 
@@ -71,7 +73,7 @@ is fully rendered or when an error occurs (with an error as the first argument).
 ```js
 <RedocStandalone
   specUrl="http://petstore.swagger.io/v2/swagger.json"
-  onLoaded={error => {
+  onLoaded={(error) => {
     if (!error) {
       console.log('Yay!');
     }

@@ -1,18 +1,18 @@
 import { SECTION_ATTR } from '../services/MenuStore';
 import styled, { media } from '../styled-components';
 
-export const MiddlePanel = styled.div<{ compact?: boolean }>`
+export const MiddlePanel = styled.div<{ $compact?: boolean }>`
   width: calc(100% - ${props => props.theme.rightPanel.width});
   padding: ${props =>
-    `${props.theme.spacing.sectionVertical}px 
+    `${props.theme.spacing.sectionVertical}px
     ${props.theme.spacing.sectionHorizontal}px
-    ${props.compact ? 0 : props.theme.spacing.sectionVertical}px;`};
+    ${props.$compact ? 0 : props.theme.spacing.sectionVertical}px;`};
   border-right: 1px solid #d6d7d8;
 
-  ${({ compact, theme }) =>
+  ${({ $compact, theme }) =>
     media.lessThan('medium', true)`
     width: 100%;
-    padding: ${`${compact ? 0 : theme.spacing.sectionVertical / 2}px ${
+    padding: ${`${$compact ? 0 : theme.spacing.sectionVertical / 2}px ${
       theme.spacing.sectionHorizontal / 2
     }px`};
     border-right: 0;
@@ -21,15 +21,19 @@ export const MiddlePanel = styled.div<{ compact?: boolean }>`
 
 export const Section = styled.div.attrs(props => ({
   [SECTION_ATTR]: props.id,
-}))<{ underlined?: boolean }>`
+}))<{ $underlined?: boolean }>`
   padding: 0;
+
+  &:last-child {
+    min-height: calc(100vh + 1px);
+  }
 
   & > &:last-child {
     min-height: initial;
   }
 
-  ${(props: any) =>
-    (props.underlined &&
+  ${({ $underlined }) =>
+    ($underlined &&
       `
     position: relative;
 
@@ -60,7 +64,7 @@ export const RightPanel = styled.div`
   color: ${({ theme }) => theme.rightPanel.textColor};
   background-color: ${props => props.theme.rightPanel.backgroundColor};
   padding: ${props =>
-    `${props.theme.spacing.sectionVertical}px 
+    `${props.theme.spacing.sectionVertical}px
     ${props.theme.spacing.sectionHorizontal}px;`};
 
   ${media.lessThan('medium', true)`

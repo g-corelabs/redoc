@@ -15,7 +15,7 @@ export const OneOfLabel = styled.span`
 }
 `;
 
-export const OneOfButton = styled.button<{ active: boolean; deprecated: boolean }>`
+export const OneOfButton = styled.button<{ $active: boolean; $deprecated: boolean }>`
   display: inline-block;
   margin-right: 10px;
   margin-bottom: 5px;
@@ -44,10 +44,10 @@ export const OneOfButton = styled.button<{ active: boolean; deprecated: boolean 
     border-color: ${props => props.theme.typography.links.color};
   }
 
-  ${({ deprecated }) => (deprecated && deprecatedCss) || ''};
+  ${({ $deprecated }) => ($deprecated && deprecatedCss) || ''};
 
   ${props => {
-    if (props.active) {
+    if (props.$active) {
       return `
       color: ${props.theme.typography.links.color};
       border-color: ${props.theme.typography.links.color};
