@@ -9,6 +9,8 @@ export interface DropdownOption {
 export interface DropdownProps {
   options: DropdownOption[];
   onChange: (option: DropdownOption) => void;
+  onToggle?: () => void;
+  expanded?: boolean;
   ariaLabel?: string;
   className?: string;
   placeholder?: string;

@@ -91,16 +91,16 @@ export class Parameters extends React.PureComponent<ParametersProps, ParametersS
 function DropdownWithinHeader({
   bodyRequired,
   ...props
-}: DropdownOrLabelProps & { bodyRequired?: boolean }) {
+}: DropdownOrLabelProps & { bodyRequired?: boolean }): JSX.Element {
   const isRequired = typeof bodyRequired === 'boolean' && !!bodyRequired;
   const isOptional = typeof bodyRequired === 'boolean' && !bodyRequired;
 
   return (
-    <UnderlinedHeader onClick={() => props.onToggle()} key="header">
+    <UnderlinedHeader onClick={() => props.onToggle?.()} key="header">
       Request Body schema: <DropdownOrLabel {...props} />
+      <ShelfIcon size={'1.5em'} direction={props.expanded ? 'up' : 'down'} />
       {isRequired && <RequiredBody>required</RequiredBody>}
       {isOptional && <OptionalBody>optional</OptionalBody>}
-      <ShelfIcon size={'1.5em'} direction={props.expanded ? 'up' : 'down'} />
     </UnderlinedHeader>
   );
 }
@@ -112,14 +112,13 @@ export function BodyContent(props: {
   expanded: boolean;
   onToggle: () => void;
 }): JSX.Element {
-  const { content, description, bodyRequired, expanded, onToggle } = props;
+  const { content, description, bodyRequired, expanded } = props;
   const { isRequestType } = content;
   return (
     <MediaTypesSwitch
       content={content}
-      renderDropdown={props => <DropdownWithinHeader bodyRequired={bodyRequired} {...props} />}
       expanded={expanded}
-      onToggle={onToggle}
+      renderDropdown={props => <DropdownWithinHeader bodyRequired={bodyRequired} {...props} />}
     >
       {({ schema }) => {
         return (

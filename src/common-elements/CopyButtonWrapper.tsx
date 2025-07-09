@@ -22,7 +22,7 @@ export const CopyButtonWrapper = (
 
   const renderCopyButton = () => {
     return (
-      <button className="copy-button" onClick={this.copy}>
+      <button className="copy-button" onClick={copy}>
         <Tooltip
           title={ClipboardService.isSupported() ? 'Copied' : 'Not supported in your browser'}
           open={tooltipShown}

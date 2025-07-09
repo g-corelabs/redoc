@@ -19,6 +19,11 @@ export const EndpointInfo = styled.button<{ $expanded?: boolean; $inverted?: boo
   color: inherit;
   width: 100%;
   text-align: left;
+  cursor: pointer;
+  padding: 10px 30px 10px ${props => (props.$inverted ? '10px' : '20px')};
+  border-radius: ${props => (props.$inverted ? '0' : '4px 4px 0 0')};
+  background-color: ${props =>
+    props.$inverted ? 'transparent' : props.theme.codeBlock.backgroundColor};
   padding: 10px 30px 10px 0;
   background-color: transparent;
   border: 0;
@@ -42,7 +47,6 @@ export const HttpVerb = styled.span.attrs((props: { type: string; $compact?: boo
 `;
 
 export const ServersOverlay = styled.div<{ $expanded: boolean }>`
-  position: absolute;
   width: 100%;
   background: #fff;
   color: #56535f;

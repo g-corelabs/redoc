@@ -32,8 +32,8 @@ export const Section = styled.div.attrs(props => ({
     min-height: initial;
   }
 
-  ${({ $underlined }) =>
-    ($underlined &&
+  ${(props: any) =>
+    (props.$underlined &&
       `
     position: relative;
 
