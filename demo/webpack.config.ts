@@ -29,11 +29,14 @@ export default (env: { playground?: boolean; bench?: boolean } = {}) => ({
   output: {
     filename: 'redoc-demo.bundle.js',
     path: root('dist'),
+    publicPath: '/',
     globalObject: 'this',
   },
 
   devServer: {
-    static: __dirname,
+    static: {
+      directory: __dirname,
+    },
     port: 9090,
     hot: true,
     historyApiFallback: true,
@@ -115,7 +118,7 @@ export default (env: { playground?: boolean; bench?: boolean } = {}) => ({
     webpackIgnore(/json-schema-ref-parser\/lib\/dereference\.js/),
     webpackIgnore(/^\.\/SearchWorker\.worker$/),
     new CopyWebpackPlugin({
-      patterns: ['demo/museum.yaml'],
+      patterns: [{ from: 'demo/openapi.yaml', to: 'openapi.yaml' }],
     }),
   ],
 });
