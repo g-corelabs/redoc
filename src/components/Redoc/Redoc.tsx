@@ -1,3 +1,4 @@
+import { computed } from 'mobx';
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
 
@@ -32,6 +33,11 @@ export class Redoc extends React.Component<RedocProps> {
     this.props.store.dispose();
   }
 
+  @computed
+  private get rootId(): string | undefined {
+    return this.props.store.menu.rootItem?.id;
+  }
+
   render() {
     const {
       store: { spec, menu, options, search, marker },
@@ -56,7 +62,7 @@ export class Redoc extends React.Component<RedocProps> {
                 <SideMenu menu={menu} />
               </StickyResponsiveSidebar>
               <ApiContentWrap className="api-content">
-                <ApiInfo store={store} />
+                <ApiInfo store={store} rootId={this.rootId} />
                 <ContentItems items={menu.items as any} />
               </ApiContentWrap>
               <BackgroundStub />

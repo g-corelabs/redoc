@@ -1,3 +1,4 @@
+import { computed } from 'mobx';
 import { observer } from 'mobx-react';
 import * as React from 'react';
 
@@ -16,8 +17,12 @@ export class SideMenu extends React.Component<{ menu: MenuStore; className?: str
   declare context: React.ContextType<typeof OptionsContext>;
   private _updateScroll?: () => void;
 
+  @computed
+  private get filteredItems(): IMenuItem[] {
+    return this.props.menu.items.filter(item => item.type !== 'root');
+  }
+
   render() {
-    const store = this.props.menu;
     return (
       <PerfectScrollbarWrap
         updateFn={this.saveScrollUpdate}
@@ -26,7 +31,7 @@ export class SideMenu extends React.Component<{ menu: MenuStore; className?: str
           wheelPropagation: false,
         }}
       >
-        <MenuItems items={store.items} onActivate={this.activate} root={true} />
+        <MenuItems items={this.filteredItems} onActivate={this.activate} root={true} />
         <RedocAttribution>
           <a target="_blank" rel="noopener noreferrer" href="https://redocly.com/redoc/">
             <RedoclyLogo />

@@ -83,11 +83,12 @@ export interface TagGroup {
   tags: string[];
 }
 
-export type MenuItemGroupType = 'group' | 'tag' | 'section' | 'schema';
+export type MenuItemGroupType = 'root' | 'group' | 'tag' | 'section' | 'schema';
 export type MenuItemType = MenuItemGroupType | 'operation';
 
 export interface IMenuItem {
   id: string;
+  legacyId: string;
   absoluteIdx?: number;
   name: string;
   sidebarLabel: string;

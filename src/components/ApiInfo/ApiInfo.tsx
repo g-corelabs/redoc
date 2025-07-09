@@ -18,6 +18,7 @@ import { l } from '../../services/Labels';
 
 export interface ApiInfoProps {
   store: AppStore;
+  rootId?: string;
 }
 
 @observer
@@ -70,7 +71,7 @@ export class ApiInfo extends React.Component<ApiInfoProps> {
     const version = (info.version && <span>({info.version})</span>) || null;
 
     return (
-      <Section>
+      <Section id={this.props.rootId}>
         <Row>
           <MiddlePanel className="api-info">
             <ApiHeader>

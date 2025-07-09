@@ -7,7 +7,7 @@ import { GROUP_DEPTH } from './MenuBuilder';
 
 import type { SpecStore } from './models';
 import type { ScrollService } from './ScrollService';
-import type { IMenuItem } from './types';
+import type { ContentItemModel, IMenuItem } from './types';
 
 /** Generic interface for MenuItems */
 
@@ -42,6 +42,7 @@ export class MenuStore {
 
   items: IMenuItem[];
   flatItems: IMenuItem[];
+  rootItem?: IMenuItem;
 
   /**
    * cached flattened menu items to support absolute indexing
@@ -59,8 +60,26 @@ export class MenuStore {
 
     this.items = spec.contentItems;
 
-    this.flatItems = flattenByProp(this.items || [], 'items');
+    const flatItems = flattenByProp(this.items || [], 'items');
+    const seenIds = new Map<string, number>();
+    const processItems = (items: ContentItemModel[]): ContentItemModel[] => {
+      return items.map(item => {
+        const originalId = item.id;
+        if (seenIds.has(originalId)) {
+          const count = seenIds.get(originalId)! + 1;
+          seenIds.set(originalId, count);
+          item.id = `${originalId}-${count}`;
+        } else {
+          seenIds.set(originalId, 0);
+        }
+
+        return item;
+      });
+    };
+
+    this.flatItems = processItems(flatItems as ContentItemModel[]);
     this.flatItems.forEach((item, idx) => (item.absoluteIdx = idx));
+    this.rootItem = this.flatItems.find(item => item.type === 'root');
 
     this.subscribe();
   }
@@ -121,12 +140,15 @@ export class MenuStore {
     if (!id) {
       return;
     }
-    let item: IMenuItem | undefined;
+    const hasHash = !!window.location.hash;
 
-    item = this.flatItems.find(i => i.id === id);
+    let item: IMenuItem | undefined;
+    item = hasHash
+      ? this.flatItems.find(i => i.legacyId === window.location.hash.slice(1))
+      : this.flatItems.find(i => i.id === id);
 
     if (item) {
-      this.activateAndScroll(item, false);
+      this.activateAndScroll(item, hasHash);
     } else {
       if (id.startsWith(SECURITY_SCHEMES_SECTION_PREFIX)) {
         item = this.flatItems.find(i => SECURITY_SCHEMES_SECTION_PREFIX.startsWith(i.id));

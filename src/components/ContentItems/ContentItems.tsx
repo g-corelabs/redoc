@@ -34,6 +34,7 @@ export class ContentItem extends React.Component<ContentItemProps> {
     let content;
     const { type } = item;
     switch (type) {
+      case 'root':
       case 'group':
         content = null;
         break;

@@ -28,13 +28,21 @@ export class MenuBuilder {
     }
     const tagsMap = MenuBuilder.getTagsWithOperations(parser, tags);
 
-    items.push(...MenuBuilder.addMarkdownItems(spec.info.description || '', undefined, 1, options));
+    let rootGroup: GroupModel | undefined;
+    if (options.globalPrefix) {
+      rootGroup = new GroupModel('root', { name: options.globalPrefix }, undefined);
+      items.push(rootGroup);
+      items.push(
+        ...MenuBuilder.addMarkdownItems(spec.info.description || '', rootGroup, 1, options),
+      );
+    }
+
     if (spec['x-tagGroups'] && spec['x-tagGroups'].length > 0) {
       items.push(
-        ...MenuBuilder.getTagGroupsItems(parser, undefined, spec['x-tagGroups'], tagsMap, options),
+        ...MenuBuilder.getTagGroupsItems(parser, rootGroup, spec['x-tagGroups'], tagsMap, options),
       );
     } else {
-      items.push(...MenuBuilder.getTagsItems(parser, tagsMap, undefined, undefined, options));
+      items.push(...MenuBuilder.getTagsItems(parser, tagsMap, rootGroup, undefined, options));
     }
 
     return items;

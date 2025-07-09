@@ -71,6 +71,8 @@ export interface RedocRawOptions {
   minCharacterLengthToInitSearch?: number;
   showWebhookVerb?: boolean;
   hidePropertiesPrefix?: boolean;
+
+  globalPrefix?: string;
 }
 
 export function argValueToBoolean(val?: string | boolean, defaultValue?: boolean): boolean {
@@ -275,6 +277,7 @@ export class RedocNormalizedOptions {
   minCharacterLengthToInitSearch: number;
   showWebhookVerb: boolean;
   hidePropertiesPrefix?: boolean;
+  globalPrefix?: string;
 
   nonce?: string;
 
@@ -361,5 +364,6 @@ export class RedocNormalizedOptions {
     this.minCharacterLengthToInitSearch = argValueToNumber(raw.minCharacterLengthToInitSearch) || 3;
     this.showWebhookVerb = argValueToBoolean(raw.showWebhookVerb);
     this.hidePropertiesPrefix = argValueToBoolean(raw.hidePropertiesPrefix, true);
+    this.globalPrefix = raw.globalPrefix;
   }
 }

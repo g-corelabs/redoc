@@ -11,6 +11,7 @@ import type { ContentItemModel, IMenuItem, MarkdownHeading, MenuItemGroupType } 
 export class GroupModel implements IMenuItem {
   //#region IMenuItem fields
   id: string;
+  legacyId: string;
   absoluteIdx?: number;
   name: string;
   sidebarLabel: string;
@@ -38,7 +39,14 @@ export class GroupModel implements IMenuItem {
     makeObservable(this);
 
     // markdown headings already have ids calculated as they are needed for heading anchors
-    this.id = (tagOrGroup as MarkdownHeading).id || type + '/' + safeSlugify(tagOrGroup.name);
+    const slug = safeSlugify(tagOrGroup.name);
+    if (slug) {
+      this.id = ((parent ? parent.id + '/' : '') + slug).toLowerCase();
+      this.legacyId = (tagOrGroup as MarkdownHeading).id || type + '/' + slug;
+    } else {
+      this.id = '';
+      this.legacyId = '';
+    }
     this.type = type;
     this.name = tagOrGroup['x-displayName'] || tagOrGroup.name;
     this.level = (tagOrGroup as MarkdownHeading).level || 1;

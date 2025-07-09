@@ -10,6 +10,7 @@ import {
   normalizeServers,
   sortByField,
   sortByRequired,
+  safeSlugify,
 } from '../../utils';
 
 import { GroupModel } from './Group.model';
@@ -52,6 +53,7 @@ let isCodeSamplesWarningPrinted = false;
 export class OperationModel implements IMenuItem {
   //#region IMenuItem fields
   id: string;
+  legacyId: string;
   absoluteIdx?: number;
   name: string;
   sidebarLabel: string;
@@ -136,11 +138,12 @@ export class OperationModel implements IMenuItem {
       this.servers = normalizeServers('', operationSpec.servers || operationSpec.pathServers || []);
     } else {
       this.operationHash = operationSpec.operationId && 'operation/' + operationSpec.operationId;
-      this.id =
+      this.id = ((parent ? parent.id + '/' : '') + safeSlugify(this.name)).toLowerCase();
+      this.legacyId =
         operationSpec.operationId !== undefined
-          ? (parent ? parent.id + '/' : '') + this.operationHash
+          ? (parent ? parent.legacyId + '/' : '') + this.operationHash
           : parent !== undefined
-          ? parent.id + this.pointer
+          ? parent.legacyId + this.pointer
           : this.pointer;
 
       this.security = (operationSpec.security || parser.spec.security || []).map(
