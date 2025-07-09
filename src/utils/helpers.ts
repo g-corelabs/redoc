@@ -134,10 +134,11 @@ const isMergebleObject = (item): boolean => {
  */
 export function safeSlugify(value: string): string {
   return (
-    slugify(value) ||
+    slugify(value, { strict: true }) ||
     value
       .toString()
       .toLowerCase()
+      .replace(/['"]/g, '') // Replace quotes, etc.
       .replace(/\s+/g, '-') // Replace spaces with -
       .replace(/&/g, '-and-') // Replace & with 'and'
       .replace(/\--+/g, '-') // Replace multiple - with single -
