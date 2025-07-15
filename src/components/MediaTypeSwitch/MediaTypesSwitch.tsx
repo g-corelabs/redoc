@@ -16,9 +16,6 @@ export interface MediaTypesSwitchProps {
 
   renderDropdown: (props: DropdownProps) => JSX.Element;
   children: (activeMime: MediaTypeModel) => JSX.Element;
-
-  onToggle?: () => void;
-  expanded?: boolean;
 }
 
 @observer
@@ -53,8 +50,6 @@ export class MediaTypesSwitch extends React.Component<MediaTypesSwitchProps> {
             value: options[activeMimeIdx].value,
             options,
             onChange: this.switchMedia,
-            onToggle: this.props.onToggle,
-            expanded: this.props.expanded,
             ariaLabel: 'Content type',
           })}
         </Wrapper>

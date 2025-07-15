@@ -14,7 +14,7 @@ export const ServerRelativeURL = styled.span`
   text-overflow: ellipsis;
 `;
 
-export const EndpointInfo = styled.button<{ $expanded?: boolean; $inverted?: boolean }>`
+export const EndpointInfo = styled.div<{ $inverted?: boolean }>`
   outline: 0;
   color: inherit;
   width: 100%;
@@ -46,9 +46,9 @@ export const HttpVerb = styled.span.attrs((props: { type: string; $compact?: boo
   border-radius: 6px;
 `;
 
-export const ServersOverlay = styled.div<{ $expanded: boolean }>`
+export const ServersOverlay = styled.div`
   width: 100%;
-  background: #fff;
+  background: transparent;
   color: #56535f;
   font-size: 14px;
   box-sizing: border-box;
@@ -60,7 +60,7 @@ export const ServerItem = styled.div`
 `;
 
 export const ServerUrl = styled.div`
-  display: inline-block;
+  display: block;
   padding: 0px 8px;
   border: 1px solid #d6d7d8;
   background: #f3f4f5;

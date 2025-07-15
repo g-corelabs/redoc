@@ -32,8 +32,8 @@ const Json = (props: JsonProps) => {
         <SampleControls>
           {showFoldingButtons && (
             <>
-              <button onClick={expandAll}> Expand all </button>
-              <button onClick={collapseAll}> Collapse all </button>
+              <button onClick={expandAll}> Expand </button>
+              <button onClick={collapseAll}> Collapse </button>
             </>
           )}
           {renderCopyButton()}

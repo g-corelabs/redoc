@@ -46,7 +46,7 @@ const DropdownComponent = (props: DropdownProps): JSX.Element => {
   };
 
   return (
-    <div className={className}>
+    <div className={className} onClick={e => e.stopPropagation()}>
       <ArrowIcon variant={variant} />
       <select onChange={handleOnChange} value={value} className="dropdown-select">
         {placeholder && (

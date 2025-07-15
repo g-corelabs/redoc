@@ -27,24 +27,9 @@ export interface ParametersProps {
   body?: RequestBodyModel;
 }
 
-export interface ParametersState {
-  expanded: boolean;
-}
-
 const PARAM_PLACES = ['path', 'query', 'cookie', 'header'];
 
-export class Parameters extends React.PureComponent<ParametersProps, ParametersState> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      expanded: false,
-    };
-  }
-
-  toggle = () => {
-    this.setState({ expanded: !this.state.expanded });
-  };
-
+export class Parameters extends React.PureComponent<ParametersProps, any> {
   orderParams(params: FieldModel[]): Record<string, FieldModel[]> {
     const res = {};
     params.forEach(param => {
@@ -79,8 +64,6 @@ export class Parameters extends React.PureComponent<ParametersProps, ParametersS
             content={bodyContent}
             description={bodyDescription}
             bodyRequired={bodyRequired}
-            expanded={this.state.expanded}
-            onToggle={this.toggle}
           />
         )}
       </>
@@ -91,17 +74,23 @@ export class Parameters extends React.PureComponent<ParametersProps, ParametersS
 function DropdownWithinHeader({
   bodyRequired,
   ...props
-}: DropdownOrLabelProps & { bodyRequired?: boolean }): JSX.Element {
+}: DropdownOrLabelProps & {
+  bodyRequired?: boolean;
+  onToggle: () => void;
+  expanded: boolean;
+}): JSX.Element {
   const isRequired = typeof bodyRequired === 'boolean' && !!bodyRequired;
   const isOptional = typeof bodyRequired === 'boolean' && !bodyRequired;
 
   return (
-    <UnderlinedHeader onClick={() => props.onToggle?.()} key="header">
-      Request Body schema: <DropdownOrLabel {...props} />
-      <ShelfIcon size={'1.5em'} direction={props.expanded ? 'up' : 'down'} />
+    <>
+      <UnderlinedHeader key="header" onClick={props.onToggle}>
+        Request Body schema: <DropdownOrLabel {...props} />
+        <ShelfIcon size={'1.5em'} direction={props.expanded ? 'up' : 'down'} />
+      </UnderlinedHeader>
       {isRequired && <RequiredBody>required</RequiredBody>}
       {isOptional && <OptionalBody>optional</OptionalBody>}
-    </UnderlinedHeader>
+    </>
   );
 }
 
@@ -109,33 +98,42 @@ export function BodyContent(props: {
   content: MediaContentModel;
   description?: string;
   bodyRequired?: boolean;
-  expanded: boolean;
-  onToggle: () => void;
 }): JSX.Element {
-  const { content, description, bodyRequired, expanded } = props;
+  const { content, description, bodyRequired } = props;
   const { isRequestType } = content;
+  const [toggle, setToggle] = React.useState(false);
+  const onToggle = () => {
+    setToggle(!toggle);
+  };
+
   return (
     <MediaTypesSwitch
       content={content}
-      expanded={expanded}
-      renderDropdown={props => <DropdownWithinHeader bodyRequired={bodyRequired} {...props} />}
+      renderDropdown={props => (
+        <DropdownWithinHeader
+          bodyRequired={bodyRequired}
+          onToggle={onToggle}
+          expanded={toggle}
+          {...props}
+        />
+      )}
     >
       {({ schema }) => {
-        return (
+        return toggle ? (
           <>
-            {expanded && description !== undefined && <Markdown source={description} />}
-            {expanded && schema?.type === 'object' && (
+            {description !== undefined && <Markdown source={description} />}
+            {schema?.type === 'object' && (
               <ConstraintsView constraints={schema?.constraints || []} />
             )}
-            {expanded && (
-              <Schema
-                skipReadOnly={isRequestType}
-                skipWriteOnly={!isRequestType}
-                key="schema"
-                schema={schema}
-              />
-            )}
+            <Schema
+              skipReadOnly={isRequestType}
+              skipWriteOnly={!isRequestType}
+              key="schema"
+              schema={schema}
+            />
           </>
+        ) : (
+          <></>
         );
       }}
     </MediaTypesSwitch>
@@ -145,6 +143,7 @@ export function BodyContent(props: {
 const commonStyles = `
   text-transform: lowercase;
   margin-left: 0;
+  margin-top: -12px;
   line-height: 1.5em;
 `;
 
