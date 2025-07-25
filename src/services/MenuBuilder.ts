@@ -1,5 +1,11 @@
 import type { OpenAPIPaths, OpenAPITag, OpenAPISchema } from '../types';
-import { isOperationName, JsonPointer, alphabeticallyByProp } from '../utils';
+import {
+  isOperationName,
+  JsonPointer,
+  alphabeticallyByProp,
+  setSecuritySchemePrefix,
+  SECURITY_DEFINITIONS_JSX_NAME,
+} from '../utils';
 import { MarkdownRenderer } from './MarkdownRenderer';
 import { GroupModel, OperationModel } from './models';
 import type { OpenAPIParser } from './OpenAPIParser';
@@ -75,7 +81,11 @@ export class MenuBuilder {
         if (heading.items) {
           group.items = mapHeadingsDeep(group, heading.items, depth + 1);
         }
-
+        if (
+          MarkdownRenderer.containsComponent(group.description || '', SECURITY_DEFINITIONS_JSX_NAME)
+        ) {
+          setSecuritySchemePrefix(group.id + '/');
+        }
         return group;
       });
 

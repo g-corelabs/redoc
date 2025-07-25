@@ -1,6 +1,12 @@
 import type { OpenAPIRef, OpenAPISchema, OpenAPISpec } from '../types';
-import { IS_BROWSER, getDefinitionName } from '../utils/';
+import {
+  IS_BROWSER,
+  getDefinitionName,
+  appendToMdHeading,
+  SECURITY_DEFINITIONS_JSX_NAME,
+} from '../utils/';
 import { JsonPointer } from '../utils/JsonPointer';
+import { buildComponentComment, MarkdownRenderer } from './MarkdownRenderer';
 
 import { RedocNormalizedOptions } from './RedocNormalizedOptions';
 import type { MergedOpenAPISchema } from './types';
@@ -31,6 +37,7 @@ export class OpenAPIParser {
     private options: RedocNormalizedOptions = new RedocNormalizedOptions({}),
   ) {
     this.validate(spec);
+    this.preprocess(spec);
 
     this.spec = spec;
     this.allowMergeRefs = spec.openapi.startsWith('3.1');
@@ -44,6 +51,17 @@ export class OpenAPIParser {
   validate(spec: Record<string, any>): void {
     if (spec.openapi === undefined) {
       throw new Error('Document must be valid OpenAPI 3.0.0 definition');
+    }
+  }
+
+  preprocess(spec: OpenAPISpec) {
+    if (spec.info && spec.components && spec.components.securitySchemes) {
+      // Automatically inject Authentication section with SecurityDefinitions component
+      const description = spec.info.description || '';
+      if (!MarkdownRenderer.containsComponent(description, SECURITY_DEFINITIONS_JSX_NAME)) {
+        const comment = buildComponentComment(SECURITY_DEFINITIONS_JSX_NAME);
+        spec.info.description = appendToMdHeading(description, 'Authentication', comment);
+      }
     }
   }
 
